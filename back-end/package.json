@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "start": "json-server db.js --watch",
+    "start-auth": "node server.js",
+    "seed": "node generators/index.mjs"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.2.0",
+    "json-server": "^0.17.4"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "guid": "e6933526-c2fa-4803-bbbd-2b5fcf3870af",
+    "name": "Zaria",
+    "surname": "Gibson",
+    "permanentEmployee": false
+  },
+  {
+    "id": 2,
+    "guid": "24cb741d-2dff-4c54-856c-748badc2b429",
+    "name": "Deondre",
+    "surname": "Spencer",
+    "permanentEmployee": true
+  },
+  {
+    "id": 3,
+    "guid": "982e8ad6-a4ee-4631-ac6a-ba075e4e9beb",
+    "name": "Cassie",
+    "surname": "Orn",
+    "permanentEmployee": true
+  },
+  {
+    "id": 4,
+    "guid": "7c21415a-acd1-4c3a-90e0-1b92f16d097b",
+    "name": "Jennifer",
+    "surname": "Huels",
+    "permanentEmployee": true
+  }
+]

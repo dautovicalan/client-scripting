@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "guid": "51ba4af5-58d8-4776-bcc2-72e2c8b6ae30",
+    "name": "Industrial"
+  },
+  {
+    "id": 2,
+    "guid": "92b4d2bd-ad11-44d9-902f-7341941ec1a9",
+    "name": "Sports"
+  },
+  {
+    "id": 3,
+    "guid": "28abf7ad-193a-4a50-a235-9fdc7edc9b84",
+    "name": "Books"
+  },
+  {
+    "id": 4,
+    "guid": "86338826-4a88-42fd-bb57-4136cd099fe6",
+    "name": "Beauty"
+  },
+  {
+    "id": 5,
+    "guid": "cd26678f-f8fa-48b7-a314-8d5257726204",
+    "name": "Games"
+  },
+  {
+    "id": 6,
+    "guid": "9848af37-5adf-4356-8d73-f6e9962ff71b",
+    "name": "Computers"
+  },
+  {
+    "id": 7,
+    "guid": "54b81bb6-36af-46de-a037-2fd41644b23f",
+    "name": "Outdoors"
+  },
+  {
+    "id": 8,
+    "guid": "fad1da6b-1ba1-4090-8225-10f3f3783c47",
+    "name": "Games"
+  },
+  {
+    "id": 9,
+    "guid": "f3a35c05-9fa3-4a5c-83f7-0b12d1f93a39",
+    "name": "Automotive"
+  },
+  {
+    "id": 10,
+    "guid": "bb8405dd-661e-4281-8589-4fe6c8838c6d",
+    "name": "Tools"
+  },
+  {
+    "id": 11,
+    "guid": "df328e81-4c21-4c2d-90ed-82b6441a04f9",
+    "name": "Industrial"
+  },
+  {
+    "id": 12,
+    "guid": "7dd39e3e-e0eb-48e3-99f4-af3d3bac0ae4",
+    "name": "Home"
+  },
+  {
+    "id": 13,
+    "guid": "ff21316d-a32b-454c-907e-6a0a7c3ab218",
+    "name": "Kids"
+  },
+  {
+    "id": 14,
+    "guid": "0e4eac83-b768-461e-b255-0ffdf01d2e3d",
+    "name": "Industrial"
+  },
+  {
+    "id": 15,
+    "guid": "1c56843f-4cb9-426c-b619-3ab84c534a39",
+    "name": "Jewelery"
+  },
+  {
+    "id": 16,
+    "guid": "27ff7a52-a00d-4670-b449-c01111079eb2",
+    "name": "Computers"
+  },
+  {
+    "id": 17,
+    "guid": "00b42e05-a42b-49b0-9cd4-65cf9b600f57",
+    "name": "Clothing"
+  },
+  {
+    "id": 18,
+    "guid": "90371243-6b55-4934-82ca-2d79ef7da42b",
+    "name": "Games"
+  },
+  {
+    "id": 19,
+    "guid": "4e44e143-4d9a-4a89-9e74-8f8d165efc8c",
+    "name": "Electronics"
+  },
+  {
+    "id": 20,
+    "guid": "39fb9158-dd37-4bb4-a836-8c7e51092f7f",
+    "name": "Grocery"
+  }
+]
