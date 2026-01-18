@@ -39,6 +39,24 @@ export const authService = {
     return data;
   },
 
+  async register(
+    email: string,
+    password: string,
+    name: string
+  ): Promise<{ id: number; email: string; name: string }> {
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({ email, password, name }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Registration failed");
+    }
+
+    return response.json();
+  },
+
   logout() {
     localStorage.removeItem("token");
   },

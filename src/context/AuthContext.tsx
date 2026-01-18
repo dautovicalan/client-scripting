@@ -21,20 +21,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    try {
-      const response = await authService.login(email, password);
-      const userData = {
-        id: response.user.id,
-        email: response.user.email,
-        name: response.user.name,
-        password: "",
-      };
-      setUser(userData);
-      setIsAuthenticated(true);
-      localStorage.setItem("user", JSON.stringify(userData));
-    } catch (error) {
-      throw new Error("Invalid credentials");
-    }
+    await authService.login(email, password);
+    const userData = {
+      id: 0,
+      email: email,
+      name: email.split("@")[0],
+      password: "",
+    };
+    setUser(userData);
+    setIsAuthenticated(true);
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   const logout = () => {
