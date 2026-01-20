@@ -16,7 +16,7 @@ export const Login = () => {
     try {
       await login(email, password);
       navigate("/");
-    } catch (err) {
+    } catch {
       setError("Invalid email or password");
     }
   };
@@ -94,7 +94,10 @@ export const Login = () => {
             <div className="relative flex justify-center text-sm">
               <span className="bg-white px-2 text-gray-500">
                 Don't have an account?{" "}
-                <Link to="/register" className="text-blue-600 hover:text-blue-500">
+                <Link
+                  to="/register"
+                  className="text-blue-600 hover:text-blue-500"
+                >
                   Register
                 </Link>
               </span>

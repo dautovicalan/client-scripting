@@ -1,5 +1,5 @@
 import { useAuth } from "../hooks/useAuth";
-import type { Customer, City, SortState, SortDirection } from "../types";
+import type { Customer, City, SortState } from "../types";
 import { Link } from "react-router-dom";
 
 interface CustomerTableProps {

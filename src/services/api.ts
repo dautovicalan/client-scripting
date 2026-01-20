@@ -22,8 +22,8 @@ const getHeaders = (authenticated = false) => {
 export const authService = {
   async login(
     email: string,
-    password: string
-  ): Promise<{ access_token: string; user: any }> {
+    password: string,
+  ): Promise<{ access_token: string; user: { access_token: string } }> {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
       headers: getHeaders(),
@@ -42,7 +42,7 @@ export const authService = {
   async register(
     email: string,
     password: string,
-    name: string
+    name: string,
   ): Promise<{ id: number; email: string; name: string }> {
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: "POST",
@@ -113,7 +113,7 @@ export const billService = {
       `${API_BASE_URL}/Bill?customerId=${customerId}`,
       {
         headers: getHeaders(true),
-      }
+      },
     );
     return response.json();
   },

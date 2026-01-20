@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import type { Customer, City, SortState, SortDirection } from "../types";
+import type { Customer, City, SortState } from "../types";
 import { customerService, cityService } from "../services/api";
 import { CustomerTable } from "../components/CustomerTable";
 import { SearchBar } from "../components/SearchBar";
@@ -73,7 +73,7 @@ export const Customers = () => {
           cities
             .find((c) => c.id === customer.cityId)
             ?.name.toLowerCase()
-            .includes(query)
+            .includes(query),
       );
     }
 
@@ -112,12 +112,12 @@ export const Customers = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return filteredAndSortedCustomers.slice(
       startIndex,
-      startIndex + itemsPerPage
+      startIndex + itemsPerPage,
     );
   }, [filteredAndSortedCustomers, currentPage, itemsPerPage]);
 
   const totalPages = Math.ceil(
-    filteredAndSortedCustomers.length / itemsPerPage
+    filteredAndSortedCustomers.length / itemsPerPage,
   );
 
   const handlePageChange = (page: number) => {

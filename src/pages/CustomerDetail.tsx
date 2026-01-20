@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import type { Customer, City, Bill } from "../types";
 import { customerService, cityService, billService } from "../services/api";
@@ -19,11 +19,7 @@ export const CustomerDetail = () => {
     cityId: null as number | null,
   });
 
-  useEffect(() => {
-    loadData();
-  }, [id]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       const citiesData = await cityService.getAll();
       setCities(citiesData);
@@ -50,7 +46,11 @@ export const CustomerDetail = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    loadData();
+  }, [id, loadData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,8 +113,8 @@ export const CustomerDetail = () => {
               {id === "new"
                 ? "New Customer"
                 : isEditing
-                ? "Edit Customer"
-                : "Customer Details"}
+                  ? "Edit Customer"
+                  : "Customer Details"}
             </h3>
             {customer && !isEditing && (
               <div className="flex gap-2">
