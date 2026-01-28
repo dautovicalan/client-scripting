@@ -31,21 +31,21 @@ export const Pagination = ({
         for (let i = 1; i <= maxVisible; i++) {
           pages.push(i);
         }
-        pages.push('...');
+        pages.push("...");
         pages.push(totalPages);
       } else if (currentPage >= totalPages - 2) {
         pages.push(1);
-        pages.push('...');
+        pages.push("...");
         for (let i = totalPages - (maxVisible - 1); i <= totalPages; i++) {
           pages.push(i);
         }
       } else {
         pages.push(1);
-        pages.push('...');
+        pages.push("...");
         for (let i = currentPage - 1; i <= currentPage + 1; i++) {
           pages.push(i);
         }
-        pages.push('...');
+        pages.push("...");
         pages.push(totalPages);
       }
     }
@@ -109,7 +109,7 @@ export const Pagination = ({
               <span className="sr-only">Previous</span>←
             </button>
             {pageNumbers.map((page, index) => {
-              if (page === '...') {
+              if (page === "...") {
                 return (
                   <span
                     key={`ellipsis-${index}`}
@@ -125,7 +125,7 @@ export const Pagination = ({
                   onClick={() => onPageChange(page as number)}
                   className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
                     page === currentPage
-                      ? "z-10 bg-blue-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                      ? "z-10 bg-blue-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                       : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                   }`}
                 >

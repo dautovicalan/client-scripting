@@ -1,11 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import { Layout } from './components/Layout';
-import { ProtectedRoute } from './components/ProtectedRoute';
-import { Customers } from './pages/Customers';
-import { CustomerDetail } from './pages/CustomerDetail';
-import { Login } from './pages/Login';
-import { Register } from './pages/Register';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Layout } from "./components/Layout";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Customers } from "./pages/Customers";
+import { CustomerDetail } from "./pages/CustomerDetail";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
+import { AuthProvider } from "./context/AuthProvider";
 
 function App() {
   return (
