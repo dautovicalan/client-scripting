@@ -23,13 +23,7 @@ export const ConfirmModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Background overlay */}
-      <div
-        className="fixed inset-0 bg-black/50"
-        onClick={onCancel}
-      />
-
-      {/* Modal panel */}
+      <div className="fixed inset-0 bg-black/50" onClick={onCancel} />
       <div className="relative z-10 bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
         <button
           type="button"
