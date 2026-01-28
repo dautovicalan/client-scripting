@@ -1,6 +1,7 @@
 import { useAuth } from "../hooks/useAuth";
 import type { Customer, City, SortState } from "../types";
 import { Link } from "react-router-dom";
+import { FiEdit, FiTrash2, FiArrowUp, FiArrowDown } from "react-icons/fi";
 
 interface CustomerTableProps {
   customers: Customer[];
@@ -27,9 +28,9 @@ export const CustomerTable = ({
 
   const renderSortIcon = (field: keyof Customer) => {
     if (sortState.field !== field) {
-      return <span className="text-gray-400">⇅</span>;
+      return null;
     }
-    return sortState.direction === "asc" ? <span>↑</span> : <span>↓</span>;
+    return sortState.direction === "asc" ? <FiArrowUp /> : <FiArrowDown />;
   };
 
   return (
@@ -109,18 +110,20 @@ export const CustomerTable = ({
               </td>
               {isAuthenticated && (
                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                  <div className="flex gap-2 justify-end">
+                  <div className="flex gap-3 justify-end">
                     <Link
                       to={`/customer/${customer.id}`}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-blue-600 hover:text-blue-900 flex items-center gap-1"
                     >
-                      View
+                      <FiEdit />
+                      Edit
                     </Link>
                     {onDelete && (
                       <button
                         onClick={() => onDelete(customer.id)}
-                        className="text-red-600 hover:text-red-900"
+                        className="text-red-600 hover:text-red-900 flex items-center gap-1"
                       >
+                        <FiTrash2 />
                         Delete
                       </button>
                     )}

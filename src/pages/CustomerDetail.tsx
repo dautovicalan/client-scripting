@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import type { Customer, City, Bill } from "../types";
 import { customerService, cityService, billService } from "../services/api";
+import { ConfirmModal } from "../components/ConfirmModal";
 
 export const CustomerDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +19,7 @@ export const CustomerDetail = () => {
     telephone: "",
     cityId: null as number | null,
   });
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const loadData = useCallback(async () => {
     try {
@@ -70,17 +72,20 @@ export const CustomerDetail = () => {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
     if (!customer) return;
 
-    if (window.confirm("Are you sure you want to delete this customer?")) {
-      try {
-        await customerService.delete(customer.id);
-        navigate("/");
-      } catch (error) {
-        console.error("Failed to delete customer:", error);
-        alert("Failed to delete customer");
-      }
+    try {
+      await customerService.delete(customer.id);
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to delete customer:", error);
+    } finally {
+      setShowDeleteModal(false);
     }
   };
 
@@ -125,7 +130,7 @@ export const CustomerDetail = () => {
                   Edit
                 </button>
                 <button
-                  onClick={handleDelete}
+                  onClick={handleDeleteClick}
                   className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                 >
                   Delete
@@ -340,6 +345,16 @@ export const CustomerDetail = () => {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        title="Delete Customer"
+        message={`Are you sure you want to delete ${customer?.name} ${customer?.surname}? This action cannot be undone.`}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setShowDeleteModal(false)}
+      />
     </div>
   );
 };

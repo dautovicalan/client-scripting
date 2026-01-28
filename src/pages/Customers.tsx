@@ -4,6 +4,7 @@ import { customerService, cityService } from "../services/api";
 import { CustomerTable } from "../components/CustomerTable";
 import { SearchBar } from "../components/SearchBar";
 import { Pagination } from "../components/Pagination";
+import { ConfirmModal } from "../components/ConfirmModal";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
@@ -18,6 +19,11 @@ export const Customers = () => {
     field: null,
     direction: "asc",
   });
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    customerId: number | null;
+    customerName: string;
+  }>({ isOpen: false, customerId: null, customerName: "" });
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
@@ -47,16 +53,30 @@ export const Customers = () => {
     }));
   };
 
-  const handleDelete = async (id: number) => {
-    if (window.confirm("Are you sure you want to delete this customer?")) {
-      try {
-        await customerService.delete(id);
-        setCustomers(customers.filter((c) => c.id !== id));
-      } catch (error) {
-        console.error("Failed to delete customer:", error);
-        alert("Failed to delete customer");
-      }
+  const handleDeleteClick = (id: number) => {
+    const customer = customers.find((c) => c.id === id);
+    setDeleteModal({
+      isOpen: true,
+      customerId: id,
+      customerName: customer ? `${customer.name} ${customer.surname}` : "",
+    });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (deleteModal.customerId === null) return;
+
+    try {
+      await customerService.delete(deleteModal.customerId);
+      setCustomers(customers.filter((c) => c.id !== deleteModal.customerId));
+    } catch (error) {
+      console.error("Failed to delete customer:", error);
+    } finally {
+      setDeleteModal({ isOpen: false, customerId: null, customerName: "" });
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModal({ isOpen: false, customerId: null, customerName: "" });
   };
 
   const filteredAndSortedCustomers = useMemo(() => {
@@ -169,7 +189,7 @@ export const Customers = () => {
           cities={cities}
           sortState={sortState}
           onSort={handleSort}
-          onDelete={isAuthenticated ? handleDelete : undefined}
+          onDelete={isAuthenticated ? handleDeleteClick : undefined}
         />
 
         <Pagination
@@ -181,6 +201,16 @@ export const Customers = () => {
           onItemsPerPageChange={handleItemsPerPageChange}
         />
       </div>
+
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        title="Delete Customer"
+        message={`Are you sure you want to delete ${deleteModal.customerName}? This action cannot be undone.`}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
     </div>
   );
 };
