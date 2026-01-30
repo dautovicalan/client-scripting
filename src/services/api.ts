@@ -1,40 +1,29 @@
+import axios from "axios";
 import type { Customer, Bill, BillItem, City, Product } from "../types";
 
 const API_BASE_URL = "http://localhost:3000";
 
-const getAuthToken = () => localStorage.getItem("token");
-
-const getHeaders = (authenticated = false) => {
-  const headers: HeadersInit = {
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
     "Content-Type": "application/json",
-  };
+  },
+});
 
-  if (authenticated) {
-    const token = getAuthToken();
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-
-  return headers;
-};
+  return config;
+});
 
 export const authService = {
   async login(
     email: string,
     password: string,
   ): Promise<{ access_token: string; user: { access_token: string } }> {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: "POST",
-      headers: getHeaders(),
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Login failed");
-    }
-
-    const data = await response.json();
+    const { data } = await api.post("/auth/login", { email, password });
     localStorage.setItem("token", data.access_token);
     return data;
   },
@@ -44,17 +33,12 @@ export const authService = {
     password: string,
     name: string,
   ): Promise<{ id: number; email: string; name: string }> {
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: "POST",
-      headers: getHeaders(),
-      body: JSON.stringify({ email, password, name }),
+    const { data } = await api.post("/auth/register", {
+      email,
+      password,
+      name,
     });
-
-    if (!response.ok) {
-      throw new Error("Registration failed");
-    }
-
-    return response.json();
+    return data;
   },
 
   logout() {
@@ -62,136 +46,92 @@ export const authService = {
   },
 
   isAuthenticated(): boolean {
-    return !!getAuthToken();
+    return !!localStorage.getItem("token");
   },
 };
 
 export const customerService = {
   async getAll(): Promise<Customer[]> {
-    const response = await fetch(`${API_BASE_URL}/Customer`, {
-      headers: getHeaders(),
-    });
-    return response.json();
+    const { data } = await api.get("/Customer");
+    return data;
   },
 
   async getById(id: number): Promise<Customer> {
-    const response = await fetch(`${API_BASE_URL}/Customer/${id}`, {
-      headers: getHeaders(),
-    });
-    return response.json();
+    const { data } = await api.get(`/Customer/${id}`);
+    return data;
   },
 
   async create(customer: Omit<Customer, "id" | "guid">): Promise<Customer> {
-    const response = await fetch(`${API_BASE_URL}/Customer`, {
-      method: "POST",
-      headers: getHeaders(true),
-      body: JSON.stringify(customer),
-    });
-    return response.json();
+    const { data } = await api.post("/Customer", customer);
+    return data;
   },
 
   async update(id: number, customer: Partial<Customer>): Promise<Customer> {
-    const response = await fetch(`${API_BASE_URL}/Customer/${id}`, {
-      method: "PATCH",
-      headers: getHeaders(true),
-      body: JSON.stringify(customer),
-    });
-    return response.json();
+    const { data } = await api.patch(`/Customer/${id}`, customer);
+    return data;
   },
 
   async delete(id: number): Promise<void> {
-    await fetch(`${API_BASE_URL}/Customer/${id}`, {
-      method: "DELETE",
-      headers: getHeaders(true),
-    });
+    await api.delete(`/Customer/${id}`);
   },
 };
 
 export const billService = {
   async getByCustomerId(customerId: number): Promise<Bill[]> {
-    const response = await fetch(
-      `${API_BASE_URL}/Bill?customerId=${customerId}`,
-      {
-        headers: getHeaders(true),
-      },
-    );
-    return response.json();
+    const { data } = await api.get("/Bill", {
+      params: { customerId },
+    });
+    return data;
   },
 
   async create(bill: Omit<Bill, "id" | "guid">): Promise<Bill> {
-    const response = await fetch(`${API_BASE_URL}/Bill`, {
-      method: "POST",
-      headers: getHeaders(true),
-      body: JSON.stringify(bill),
-    });
-    return response.json();
+    const { data } = await api.post("/Bill", bill);
+    return data;
   },
 
   async update(id: number, bill: Partial<Bill>): Promise<Bill> {
-    const response = await fetch(`${API_BASE_URL}/Bill/${id}`, {
-      method: "PATCH",
-      headers: getHeaders(true),
-      body: JSON.stringify(bill),
-    });
-    return response.json();
+    const { data } = await api.patch(`/Bill/${id}`, bill);
+    return data;
   },
 
   async delete(id: number): Promise<void> {
-    await fetch(`${API_BASE_URL}/Bill/${id}`, {
-      method: "DELETE",
-      headers: getHeaders(true),
-    });
+    await api.delete(`/Bill/${id}`);
   },
 };
 
 export const billItemService = {
   async getByBillId(billId: number): Promise<BillItem[]> {
-    const response = await fetch(`${API_BASE_URL}/Item?billId=${billId}`, {
-      headers: getHeaders(true),
+    const { data } = await api.get("/Item", {
+      params: { billId },
     });
-    return response.json();
+    return data;
   },
 
   async create(item: Omit<BillItem, "id">): Promise<BillItem> {
-    const response = await fetch(`${API_BASE_URL}/Item`, {
-      method: "POST",
-      headers: getHeaders(true),
-      body: JSON.stringify(item),
-    });
-    return response.json();
+    const { data } = await api.post("/Item", item);
+    return data;
   },
 
   async update(id: number, item: Partial<BillItem>): Promise<BillItem> {
-    const response = await fetch(`${API_BASE_URL}/Item/${id}`, {
-      method: "PATCH",
-      headers: getHeaders(true),
-      body: JSON.stringify(item),
-    });
-    return response.json();
+    const { data } = await api.patch(`/Item/${id}`, item);
+    return data;
   },
 
   async delete(id: number): Promise<void> {
-    await fetch(`${API_BASE_URL}/Item/${id}`, {
-      method: "DELETE",
-      headers: getHeaders(true),
-    });
+    await api.delete(`/Item/${id}`);
   },
 };
 
 export const cityService = {
   async getAll(): Promise<City[]> {
-    const response = await fetch(`${API_BASE_URL}/City`, {
-      headers: getHeaders(),
-    });
-    return response.json();
+    const { data } = await api.get("/City");
+    return data;
   },
 };
 
 export const productService = {
   async getAll(): Promise<Product[]> {
-    const response = await fetch(`${API_BASE_URL}/Product`, {
-      headers: getHeaders(true),
-    });
-    return response.json();
+    const { data } = await api.get("/Product");
+    return data;
   },
 };
