@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import type { Bill, BillItem, Customer, Product } from "../types";
+import type { Bill, BillItem, Customer, Product, Seller } from "../types";
 import {
   billService,
   billItemService,
   customerService,
   productService,
+  sellerService,
 } from "../services/api";
 import { BillItemsTable } from "../components/BillItemsTable";
 import { BillItemForm } from "../components/BillItemForm";
+import { BillForm } from "../components/BillForm";
 import { ConfirmModal } from "../components/ConfirmModal";
-import { FiArrowLeft, FiPlus } from "react-icons/fi";
+import { FiArrowLeft, FiPlus, FiEdit } from "react-icons/fi";
 
 export const BillDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,10 +21,13 @@ export const BillDetail = () => {
   const [items, setItems] = useState<BillItem[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [sellers, setSellers] = useState<Seller[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [itemFormOpen, setItemFormOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<BillItem | null>(null);
+
+  const [billFormOpen, setBillFormOpen] = useState(false);
 
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
@@ -38,17 +43,19 @@ export const BillDetail = () => {
 
   const loadData = async (billId: number) => {
     try {
-      const [billData, itemsData, customersData, productsData] =
+      const [billData, itemsData, customersData, productsData, sellersData] =
         await Promise.all([
           billService.getById(billId),
           billItemService.getByBillId(billId),
           customerService.getAll(),
           productService.getAll(),
+          sellerService.getAll(),
         ]);
       setBill(billData);
       setItems(itemsData);
       setCustomers(customersData);
       setProducts(productsData);
+      setSellers(sellersData);
     } catch (error) {
       console.error("Failed to load data:", error);
       navigate("/bills");
@@ -60,6 +67,11 @@ export const BillDetail = () => {
   const getCustomerName = (customerId: number) => {
     const customer = customers.find((c) => c.id === customerId);
     return customer ? `${customer.name} ${customer.surname}` : "-";
+  };
+
+  const getSellerName = (sellerId: number) => {
+    const seller = sellers.find((s) => s.id === sellerId);
+    return seller ? `${seller.name} ${seller.surname}` : "-";
   };
 
   const getProductName = (productId: number) => {
@@ -76,6 +88,23 @@ export const BillDetail = () => {
       style: "currency",
       currency: "USD",
     }).format(amount);
+  };
+
+  const handleEditBill = () => {
+    setBillFormOpen(true);
+  };
+
+  const handleSaveBill = async (billData: Omit<Bill, "id" | "guid"> | Bill) => {
+    if (!bill) return;
+    try {
+      if ("id" in billData) {
+        const updated = await billService.update(billData.id, billData);
+        setBill(updated);
+      }
+      setBillFormOpen(false);
+    } catch (error) {
+      console.error("Failed to update bill:", error);
+    }
   };
 
   const handleAddItem = () => {
@@ -115,7 +144,7 @@ export const BillDetail = () => {
     setDeleteModal({ isOpen: false, itemId: null, productName: "" });
   };
 
-  const handleSaveItem = async (itemData: Omit<BillItem, "id"> | BillItem) => {
+  const handleSaveItem = async (itemData: Omit<BillItem, "id" | "guid"> | BillItem) => {
     try {
       if ("id" in itemData) {
         const updated = await billItemService.update(itemData.id, itemData);
@@ -140,7 +169,7 @@ export const BillDetail = () => {
   const updateBillTotal = async (updatedItems: BillItem[]) => {
     if (!bill) return;
     const newTotal = updatedItems.reduce(
-      (sum, item) => sum + item.quantity * item.price,
+      (sum, item) => sum + item.totalPrice,
       0
     );
     try {
@@ -185,10 +214,19 @@ export const BillDetail = () => {
       </div>
 
       <div className="bg-white shadow rounded-lg p-6 mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">
-          Bill #{bill.billNumber}
-        </h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="flex justify-between items-start mb-4">
+          <h1 className="text-2xl font-bold text-gray-900">
+            Bill #{bill.billNumber}
+          </h1>
+          <button
+            onClick={handleEditBill}
+            className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            <FiEdit />
+            Edit Bill
+          </button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div>
             <p className="text-sm font-medium text-gray-500">Date</p>
             <p className="mt-1 text-sm text-gray-900">{formatDate(bill.date)}</p>
@@ -197,6 +235,12 @@ export const BillDetail = () => {
             <p className="text-sm font-medium text-gray-500">Customer</p>
             <p className="mt-1 text-sm text-gray-900">
               {getCustomerName(bill.customerId)}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-500">Seller</p>
+            <p className="mt-1 text-sm text-gray-900">
+              {getSellerName(bill.sellerId)}
             </p>
           </div>
           <div>
@@ -244,6 +288,15 @@ export const BillDetail = () => {
         editingItem={editingItem}
         onSave={handleSaveItem}
         onCancel={handleCancelForm}
+      />
+
+      <BillForm
+        isOpen={billFormOpen}
+        customers={customers}
+        sellers={sellers}
+        editingBill={bill}
+        onSave={handleSaveBill}
+        onCancel={() => setBillFormOpen(false)}
       />
 
       <ConfirmModal

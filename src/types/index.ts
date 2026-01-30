@@ -28,10 +28,11 @@ export interface Bill {
 
 export interface BillItem {
   id: number;
+  guid?: string;
   billId: number;
   productId: number;
   quantity: number;
-  price: number;
+  totalPrice: number;
 }
 
 export interface Product {

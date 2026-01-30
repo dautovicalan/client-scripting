@@ -6,7 +6,8 @@ interface BillFormProps {
   isOpen: boolean;
   customers: Customer[];
   sellers: Seller[];
-  onSave: (bill: Omit<Bill, "id" | "guid">) => void;
+  editingBill?: Bill | null;
+  onSave: (bill: Omit<Bill, "id" | "guid"> | Bill) => void;
   onCancel: () => void;
 }
 
@@ -14,6 +15,7 @@ export const BillForm = ({
   isOpen,
   customers,
   sellers,
+  editingBill,
   onSave,
   onCancel,
 }: BillFormProps) => {
@@ -29,24 +31,45 @@ export const BillForm = ({
 
   useEffect(() => {
     if (isOpen) {
-      setFormData({
-        billNumber: `BILL-${Date.now()}`,
-        date: new Date().toISOString().split("T")[0],
-        customerId: customers[0]?.id || 0,
-        sellerId: sellers[0]?.id || 0,
-        creditCardId: null,
-        comment: "",
-        total: 0,
-      });
+      if (editingBill) {
+        setFormData({
+          billNumber: editingBill.billNumber,
+          date: editingBill.date.split("T")[0],
+          customerId: editingBill.customerId,
+          sellerId: editingBill.sellerId,
+          creditCardId: editingBill.creditCardId,
+          comment: editingBill.comment,
+          total: editingBill.total,
+        });
+      } else {
+        setFormData({
+          billNumber: `BILL-${Date.now()}`,
+          date: new Date().toISOString().split("T")[0],
+          customerId: customers[0]?.id || 0,
+          sellerId: sellers[0]?.id || 0,
+          creditCardId: null,
+          comment: "",
+          total: 0,
+        });
+      }
     }
-  }, [isOpen, customers, sellers]);
+  }, [isOpen, editingBill, customers, sellers]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    if (editingBill) {
+      onSave({
+        ...editingBill,
+        ...formData,
+      });
+    } else {
+      onSave(formData);
+    }
   };
 
   if (!isOpen) return null;
+
+  const isEditing = !!editingBill;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -60,7 +83,9 @@ export const BillForm = ({
           <FiX className="h-5 w-5" />
         </button>
 
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Create New Bill</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-4">
+          {isEditing ? "Edit Bill" : "Create New Bill"}
+        </h3>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -179,7 +204,7 @@ export const BillForm = ({
               type="submit"
               className="px-4 py-2 rounded-md border border-transparent bg-blue-600 text-sm font-medium text-white hover:bg-blue-700"
             >
-              Create Bill
+              {isEditing ? "Save Changes" : "Create Bill"}
             </button>
           </div>
         </form>

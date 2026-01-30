@@ -70,10 +70,10 @@ export const BillItemsTable = ({
                 {item.quantity}
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {formatCurrency(item.price)}
+                {formatCurrency(item.totalPrice / item.quantity)}
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {formatCurrency(item.quantity * item.price)}
+                {formatCurrency(item.totalPrice)}
               </td>
               <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                 <div className="flex gap-3 justify-end">
