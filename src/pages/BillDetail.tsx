@@ -39,6 +39,7 @@ export const BillDetail = () => {
     if (id) {
       loadData(Number(id));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const loadData = async (billId: number) => {
@@ -144,12 +145,14 @@ export const BillDetail = () => {
     setDeleteModal({ isOpen: false, itemId: null, productName: "" });
   };
 
-  const handleSaveItem = async (itemData: Omit<BillItem, "id" | "guid"> | BillItem) => {
+  const handleSaveItem = async (
+    itemData: Omit<BillItem, "id" | "guid"> | BillItem,
+  ) => {
     try {
       if ("id" in itemData) {
         const updated = await billItemService.update(itemData.id, itemData);
         const updatedItems = items.map((i) =>
-          i.id === updated.id ? updated : i
+          i.id === updated.id ? updated : i,
         );
         setItems(updatedItems);
         updateBillTotal(updatedItems);
@@ -170,7 +173,7 @@ export const BillDetail = () => {
     if (!bill) return;
     const newTotal = updatedItems.reduce(
       (sum, item) => sum + item.totalPrice,
-      0
+      0,
     );
     try {
       const updated = await billService.update(bill.id, { total: newTotal });
@@ -229,7 +232,9 @@ export const BillDetail = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div>
             <p className="text-sm font-medium text-gray-500">Date</p>
-            <p className="mt-1 text-sm text-gray-900">{formatDate(bill.date)}</p>
+            <p className="mt-1 text-sm text-gray-900">
+              {formatDate(bill.date)}
+            </p>
           </div>
           <div>
             <p className="text-sm font-medium text-gray-500">Customer</p>

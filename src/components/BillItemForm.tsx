@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { BillItem, Product } from "../types";
 import { FiX } from "react-icons/fi";
 
@@ -19,27 +19,21 @@ export const BillItemForm = ({
   onSave,
   onCancel,
 }: BillItemFormProps) => {
-  const [formData, setFormData] = useState({
-    productId: 0,
-    quantity: 1,
-    unitPrice: 0,
-  });
-
-  useEffect(() => {
+  const [formData, setFormData] = useState(() => {
     if (editingItem) {
-      setFormData({
+      return {
         productId: editingItem.productId,
         quantity: editingItem.quantity,
         unitPrice: editingItem.totalPrice / editingItem.quantity,
-      });
+      };
     } else {
-      setFormData({
+      return {
         productId: products[0]?.id || 0,
         quantity: 1,
         unitPrice: products[0]?.price || 0,
-      });
+      };
     }
-  }, [editingItem, products]);
+  });
 
   const handleProductChange = (productId: number) => {
     const product = products.find((p) => p.id === productId);
@@ -152,7 +146,10 @@ export const BillItemForm = ({
 
           <div className="bg-gray-50 rounded-md p-3">
             <p className="text-sm text-gray-600">
-              Total: <span className="font-semibold">${(formData.quantity * formData.unitPrice).toFixed(2)}</span>
+              Total:{" "}
+              <span className="font-semibold">
+                ${(formData.quantity * formData.unitPrice).toFixed(2)}
+              </span>
             </p>
           </div>
 

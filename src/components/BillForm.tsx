@@ -32,6 +32,7 @@ export const BillForm = ({
   useEffect(() => {
     if (isOpen) {
       if (editingBill) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setFormData({
           billNumber: editingBill.billNumber,
           date: editingBill.date.split("T")[0],
