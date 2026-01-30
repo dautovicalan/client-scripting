@@ -77,6 +77,16 @@ export const customerService = {
 };
 
 export const billService = {
+  async getAll(): Promise<Bill[]> {
+    const { data } = await api.get("/Bill");
+    return data;
+  },
+
+  async getById(id: number): Promise<Bill> {
+    const { data } = await api.get(`/Bill/${id}`);
+    return data;
+  },
+
   async getByCustomerId(customerId: number): Promise<Bill[]> {
     const { data } = await api.get("/Bill", {
       params: { customerId },

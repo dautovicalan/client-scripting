@@ -67,3 +67,13 @@ export interface SortState {
   field: keyof Customer | null;
   direction: SortDirection;
 }
+
+export interface BillSortState {
+  field: keyof Bill | null;
+  direction: SortDirection;
+}
+
+export interface BillItemSortState {
+  field: keyof BillItem | null;
+  direction: SortDirection;
+}

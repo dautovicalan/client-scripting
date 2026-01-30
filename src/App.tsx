@@ -3,6 +3,8 @@ import { Layout } from "./components/Layout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Customers } from "./pages/Customers";
 import { CustomerDetail } from "./pages/CustomerDetail";
+import { Bills } from "./pages/Bills";
+import { BillDetail } from "./pages/BillDetail";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { AuthProvider } from "./context/AuthProvider";
@@ -29,6 +31,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <CustomerDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/bills" element={<Bills />} />
+            <Route
+              path="/bills/:id"
+              element={
+                <ProtectedRoute>
+                  <BillDetail />
                 </ProtectedRoute>
               }
             />

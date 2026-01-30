@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { FiDatabase, FiUsers, FiLogIn, FiLogOut, FiUserPlus, FiUser } from "react-icons/fi";
+import { FiDatabase, FiUsers, FiFileText, FiLogIn, FiLogOut, FiUserPlus, FiUser } from "react-icons/fi";
 
 interface LayoutProps {
   children: ReactNode;
@@ -36,6 +36,13 @@ export const Layout = ({ children }: LayoutProps) => {
                 >
                   <FiUsers />
                   Customers
+                </Link>
+                <Link
+                  to="/bills"
+                  className="inline-flex items-center gap-2 px-1 pt-1 text-sm font-medium text-gray-900 hover:text-gray-700"
+                >
+                  <FiFileText />
+                  Bills
                 </Link>
               </div>
             </div>
