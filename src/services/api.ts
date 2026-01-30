@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Customer, Bill, BillItem, City, Product } from "../types";
+import type { Customer, Bill, BillItem, City, Product, Seller } from "../types";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -142,6 +142,13 @@ export const cityService = {
 export const productService = {
   async getAll(): Promise<Product[]> {
     const { data } = await api.get("/Product");
+    return data;
+  },
+};
+
+export const sellerService = {
+  async getAll(): Promise<Seller[]> {
+    const { data } = await api.get("/Seller");
     return data;
   },
 };

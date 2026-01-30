@@ -1,15 +1,18 @@
 import { useState, useEffect, useMemo } from "react";
-import type { Bill, Customer, BillSortState } from "../types";
-import { billService, customerService } from "../services/api";
+import type { Bill, Customer, Seller, BillSortState } from "../types";
+import { billService, customerService, sellerService } from "../services/api";
 import { BillTable } from "../components/BillTable";
+import { BillForm } from "../components/BillForm";
 import { SearchBar } from "../components/SearchBar";
 import { Pagination } from "../components/Pagination";
 import { ConfirmModal } from "../components/ConfirmModal";
 import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export const Bills = () => {
   const [bills, setBills] = useState<Bill[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [sellers, setSellers] = useState<Seller[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,7 +26,9 @@ export const Bills = () => {
     billId: number | null;
     billNumber: string;
   }>({ isOpen: false, billId: null, billNumber: "" });
+  const [billFormOpen, setBillFormOpen] = useState(false);
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadData();
@@ -31,12 +36,14 @@ export const Bills = () => {
 
   const loadData = async () => {
     try {
-      const [billsData, customersData] = await Promise.all([
+      const [billsData, customersData, sellersData] = await Promise.all([
         billService.getAll(),
         customerService.getAll(),
+        sellerService.getAll(),
       ]);
       setBills(billsData);
       setCustomers(customersData);
+      setSellers(sellersData);
     } catch (error) {
       console.error("Failed to load data:", error);
     } finally {
@@ -76,6 +83,17 @@ export const Bills = () => {
 
   const handleDeleteCancel = () => {
     setDeleteModal({ isOpen: false, billId: null, billNumber: "" });
+  };
+
+  const handleCreateBill = async (billData: Omit<Bill, "id" | "guid">) => {
+    try {
+      const newBill = await billService.create(billData);
+      setBills([...bills, newBill]);
+      setBillFormOpen(false);
+      navigate(`/bills/${newBill.id}`);
+    } catch (error) {
+      console.error("Failed to create bill:", error);
+    }
   };
 
   const filteredAndSortedBills = useMemo(() => {
@@ -167,6 +185,16 @@ export const Bills = () => {
             total.
           </p>
         </div>
+        {isAuthenticated && (
+          <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+            <button
+              onClick={() => setBillFormOpen(true)}
+              className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
+            >
+              Add Bill
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="mt-8 flex flex-col gap-4">
@@ -201,6 +229,14 @@ export const Bills = () => {
         cancelLabel="Cancel"
         onConfirm={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
+      />
+
+      <BillForm
+        isOpen={billFormOpen}
+        customers={customers}
+        sellers={sellers}
+        onSave={handleCreateBill}
+        onCancel={() => setBillFormOpen(false)}
       />
     </div>
   );

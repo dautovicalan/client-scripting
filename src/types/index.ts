@@ -41,6 +41,14 @@ export interface Product {
   subCategoryId: number;
 }
 
+export interface Seller {
+  id: number;
+  guid: string;
+  name: string;
+  surname: string;
+  permanentEmployee: boolean;
+}
+
 export interface User {
   id: number;
   email: string;
