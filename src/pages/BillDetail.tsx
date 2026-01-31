@@ -287,6 +287,7 @@ export const BillDetail = () => {
       />
 
       <BillItemForm
+        key={editingItem?.id ?? "new"}
         isOpen={itemFormOpen}
         billId={bill.id}
         products={products}
